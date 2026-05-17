@@ -54,7 +54,7 @@ def send_card_message(token: str, open_id: str, card: dict) -> dict:
     payload = {
         "receive_id": open_id,
         "msg_type": "interactive",
-        "content": json.dumps(card),
+        "content": json.dumps(card, ensure_ascii=False),
     }
     resp = requests.post(
         FEISHU_MSG_URL,
@@ -66,8 +66,12 @@ def send_card_message(token: str, open_id: str, card: dict) -> dict:
         json=payload,
         timeout=15,
     )
-    resp.raise_for_status()
-    return resp.json()
+    # 打印完整响应用于调试
+    body = resp.json()
+    print(f"[DEBUG] 飞书返回: {json.dumps(body, ensure_ascii=False)}")
+    if resp.status_code != 200 or body.get("code") != 0:
+        raise RuntimeError(f"飞书 API 错误 (HTTP {resp.status_code}, code={body.get('code')}): {body.get('msg', '未知错误')}")
+    return body
 
 
 # ─── 数据获取 ─────────────────────────────────────────
@@ -135,6 +139,7 @@ def build_card(news_list: list[dict]) -> dict:
     )
 
     card = {
+        "config": {"wide_screen_mode": True},
         "header": {
             "title": {"tag": "plain_text", "content": f"🔥 AI 早报 | {date_str}"},
             "template": "blue",
