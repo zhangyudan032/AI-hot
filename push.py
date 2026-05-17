@@ -58,7 +58,7 @@ def send_card_message(token: str, open_id: str, card: dict) -> dict:
     }
     resp = requests.post(
         FEISHU_MSG_URL,
-        params={"receive_id_type": "open_id"},
+        params={"receive_id_type": "union_id"},
         headers={
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
@@ -156,10 +156,10 @@ def main():
     # 校验环境变量
     app_id = os.environ.get("FEISHU_APP_ID")
     app_secret = os.environ.get("FEISHU_APP_SECRET")
-    open_id = os.environ.get("FEISHU_OPEN_ID")
+    open_id = os.environ.get("FEISHU_UNION_ID")
 
     if not all([app_id, app_secret, open_id]):
-        print("❌ 缺少环境变量：FEISHU_APP_ID / FEISHU_APP_SECRET / FEISHU_OPEN_ID")
+        print("❌ 缺少环境变量：FEISHU_APP_ID / FEISHU_APP_SECRET / FEISHU_UNION_ID")
         sys.exit(1)
 
     print("📡 正在获取 AI 新闻数据 …")
