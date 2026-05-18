@@ -2,8 +2,8 @@ name: AI 早报每日推送
 
 on:
   schedule:
-    # UTC 00:00 = 北京时间 08:00
-    - cron: "0 0 * * *"
+    # UTC 22:00 = 北京时间 06:00（预留 2h 延迟余量，实际 8-9 点收到）
+    - cron: "0 22 * * *"
   workflow_dispatch:
 
 jobs:
